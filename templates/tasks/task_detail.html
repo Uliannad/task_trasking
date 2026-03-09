@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="custom-glass p-4 p-md-5 shadow rounded-4 text-white mb-4">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <h2 class="display-5 fw-bold">{{ task.title }}</h2>
+                <div class="btn-group">
+                    <a href="{% url 'tasks:task-update' task.id %}" class="btn btn-outline-warning btn-sm"><i class="bi bi-pencil"></i></a>
+                    <a href="{% url 'tasks:task-delete' task.id %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i></a>
+                </div>
+            </div>
+            <p class="lead opacity-75 mb-4">{{ task.description }}</p>
+            <div class="d-flex gap-2 mb-4">
+                <span class="badge bg-primary p-2 px-3 fs-6">{{ task.status }}</span>
+                <span class="badge bg-secondary p-2 px-3 fs-6">{{ task.priority }}</span>
+            </div>
+
+            <hr class="opacity-25">
+
+            <h3 class="h4 mt-5 mb-4"><i class="bi bi-chat-dots me-2"></i>Коментарі</h3>
+            {% for comment in task.comments.all %}
+                <div class="card bg-dark bg-opacity-25 border-0 text-white mb-3 shadow-sm">
+                    <div class="card-body">
+                        <p class="mb-3">{{ comment.content }}</p>
+                        {% if comment.media %}
+                            <div class="mb-3 rounded overflow-hidden shadow-sm" style="max-width: 300px;">
+                                {% if comment.media.url|endswith:".jpg" or comment.media.url|endswith:".png" or comment.media.url|endswith:".jpeg" or comment.media.url|endswith:".avif" %}
+                                    <img src="{{ comment.media.url }}" class="img-fluid" alt="Медіа">
+                                {% elif comment.media.url|endswith:".mp4" %}
+                                    <video class="w-100" controls><source src="{{ comment.media.url }}" type="video/mp4"></video>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="opacity-75"><i class="bi bi-person-circle me-1"></i>{{ comment.author.username }}</small>
+                            <form action="{% url 'tasks:comment-like-toggle' comment.id %}" method="post" class="m-0">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm {% if request.user in comment.likes.all %}btn-success{% else %}btn-outline-light{% endif %} rounded-pill">
+                                    <i class="bi bi-heart-fill me-1"></i> {{ comment.likes.count }}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="opacity-50">Поки що немає коментарів.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="custom-glass p-4 shadow rounded-4 text-white sticky-top" style="top: 100px;">
+            <h4 class="mb-3">Написати коментар</h4>
+            <form action="{% url 'tasks:task-detail' task.id %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3 custom-form-fields">
+                    {{ comment_form.as_p }}
+                </div>
+                <button type="submit" class="btn btn-primary w-100 rounded-pill">Відправити</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

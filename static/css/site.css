@@ -1,0 +1,48 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    background-image: url("{% static 'static/images/1.png' %}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.custom-form-fields input,
+.custom-form-fields textarea,
+.custom-form-fields select {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    color: white !important;
+    margin-bottom: 1rem;
+}
+
+.custom-form-fields input:focus {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    outline: none;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+
+.hover-card {
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.hover-card:hover {
+    transform: translateY(-5px);
+    background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+
+.custom-form-fields p label {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    margin-bottom: 0.4rem;
+    display: block;
+}
